@@ -1,0 +1,220 @@
+============================================================================================================
+OBJECTIVES : 
+
+This document explains purpose and application of different type of locks from java.util.concurrent.locks package.
+============================================================================================================
+REFERENCES : 
+
+I.]  readme.txt  
+        
+============================================================================================================
+NOTES SECTION  :
+============================================================================================================
+
+Need for High level Concurrency Objects. ***
+----------------------------------------
+
+The following three common causes can lead to starvation of threads in Java:
+
+1. Threads with high priority swallow all CPU time from threads with lower priority.
+
+2. Threads are blocked indefinitely waiting to enter a synchronized block, 
+   because other threads are constantly allowed access before it.
+
+3. Threads waiting on an object (called wait() on it) remain waiting indefinitely
+   because other threads are constantly awakened instead of it.
+
+This means that the built-in synchronization mechanism has some limitations , e.g.
+
+Synchronization is good, but not perfect. It has some functional limitations -- 
+it is not possible to interrupt a thread that is waiting to acquire a lock, nor is it possible 
+to poll for a lock or attempt to acquire a lock without being willing to wait forever for it. 
+Synchronization also requires that locks be released in the same stack frame in which 
+they were acquired, which most of the time is the right thing (and interacts nicely with 
+exception handling), but a small number of cases exist where non-block-structured locking can be a big win.
+ 
+For more fine-grained control over synchronization, Java 5 introduced various new  classes and  
+interfaces with java.util.concurrent  package.
+
+I] First of this is  java.util.concurrent.locks  package , which  provides following 
+   interfaces and  classes for this purpose.
+
+ 1. Lock – the simplest case of a lock which can be acquired and released.
+ 
+ 2. ReadWriteLock – A lock implementation that has both read and write lock types 
+                  – Multiple read locks can be held at a time unless the 
+                    exclusive write lock is held
+    
+Following 2 classes provide implementations of above 2 interfaces.
+Both of which are reentrant (this just means a thread can reacquire the same lock 
+multiple times without any issue).
+
+  1. ReentrantLock – A reentrant Lock implementation of the Lock interface
+  
+  2. ReentrantReadWriteLock – a reentrant implementation of the ReadWriteLock interface.
+
+**********************************************************************************
+
+The main differences between a Lock and a synchronized block are:
+
+- A synchronized block makes no guarantees about the sequence in which threads waiting 
+  to entering it are granted access.
+  
+- You cannot pass any parameters to the entry of a synchronized block. Thus, having a timeout 
+  trying to get access to a synchronized block is not possible.
+  
+- The synchronized block must be fully contained within a single method. 
+  A Lock can have it's calls to lock() and unlock() in separate methods.
+
+**********************************************************************************
+
+ The Lock interface has the following primary methods which  are  implemented in
+ ReentrantLock  class
+
+   1.  lock()  : This method locks the Lock instance if possible. If the Lock instance is already held , 
+                 (by some other thread) then the thread calling lock() is blocked until the Lock is
+                 released by the other thread. This method can not be interrupted. 
+                 This method doesn't throw InterruptedException. 
+                 
+   2.  lockInterruptibly() :
+   
+       Thread calling this method is blocked until lock is available.
+       If lock is not available then the thread gets blocked, and if it is interrupted when it 
+       is blocked , then it comes out of blocking state and continues further. This is unlike to 
+       lock() method. This method throws InterruptedException.
+               
+   3.  public  boolean tryLock():
+   
+       Acquires the lock if it is not held by another thread and returns immediately with the value true, 
+       setting the lock hold count to one. 
+       Even when this lock has been set to use a fair ordering policy, a call to tryLock() will 
+       immediately acquire the lock if it is available, whether or not other threads are currently waiting 
+       for the lock. 
+       This "barging" behavior can be useful in certain circumstances, even though it breaks fairness.
+       If you want to honor the fairness setting for this lock, then use tryLock(0, TimeUnit.SECONDS) 
+       which is almost equivalent (it also detects interruption). 
+       If the current thread already holds this lock then the hold count is incremented by one 
+       and the method returns true.
+       If the lock is held by another thread then this method will return immediately with the value false.
+       So the thread trying to get the lock  using this method never blocks. 
+      
+       
+   4.  public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException
+   
+       Works like the tryLock() method, except it waits up the given timeout before giving up trying to 
+       lock the Lock. While waiting in this method thread can be interrupted.This method throws 
+       InterruptedException. When the lock is acquired this method returns true and increments the hold
+       count of the thread by one. If the specified waiting time elapses then the method returns false.
+       If the time is less than or equal to zero, the method will not wait at all. 
+       
+       If this lock has been set to use a fair ordering policy then an available lock will not 
+       be acquired if any other threads are waiting for the lock. This is in contrast to the tryLock() 
+       method. If you want a timed tryLock that does permit barging on a fair lock then combine 
+       the timed and un-timed forms together as given below ,
+       
+       if (lock.tryLock() || lock.tryLock(timeout, unit) ) { ... }
+       
+   5.  unlock()
+       This  method unlocks the Lock instance. Typically, a Lock implementation will only allow the
+       thread that has locked the Lock to call this method. Other threads calling this method may result 
+       in an unchecked exception (RuntimeException). 
+       As unlock  must  be done in any case after lock is acquired , even though exception is thrown , 
+       it's a practice to put unlock() in finally block.
+
+ReentrantLock class :
+--------------------
+
+A lock is said to be re-entrant if the owning thread can call its lock method multiple times 
+without blocking. To release the lock, the owning thread must call the unlock method as many 
+times as it called the lock method.
+ 
+What do we mean by a reentrant lock? Simply that there is an acquisition or (Hold) count associated 
+with the lock, and if a thread that holds the lock acquires it again, the acquisition count is 
+incremented and the lock then needs to be released twice to truly release the lock. 
+This parallels the semantics of synchronized; if a thread enters a synchronized block protected 
+by a monitor that the thread already owns, the thread will be allowed to proceed, and the lock 
+will not be released when the thread exits the second (or subsequent) synchronized block, but 
+only will be released when it exits the first synchronized block it entered protected by that monitor.  
+
+To create a ReentrantLock, you have two constructors, a default constructor and 
+a constructor with a boolean argument indicating if the lock is fair or not. 
+A fair lock indicates that the threads will acquire the locks in the order they ask for.
+Fairness is a little heavier than default locking strategies, so use it only if you need it. 
+To acquire the lock, you just have to use the method lock and unlock to release it.
+
+Benefits of ReentrantLock over synchronized in Java:
+
+1) Ability to lock interruptibly.
+2) Ability to timeout while waiting for lock.
+3) Power to create fair lock.
+4) API to get list of waiting thread for lock.
+5) Flexibility to try for lock without blocking.
+
+
+#### run following  demos : 
+C:\Java_concurrency_workspace\JavaConcurrency\src\com\seed\concurrent\locks\simplelock\TestMySimpleLock.java
+
+C:\Java_concurrency_workspace\JavaConcurrency\src\com\seed\concurrent\locks\simplelock\TestMyReentrant.java
+
+#### run  following  demos as examples of tryLock() and lockInterruptibly() methods 
+     of  ReentrantLock  class.
+     
+C:\Java_concurrency_workspace\JavaConcurrency\src\com\seed\concurrent\locks\reentrantlock\TestReentrantTryLock.java
+           
+C:\Java_concurrency_workspace\JavaConcurrency\src\com\seed\concurrent\locks\reentrantlock\TestLockInterrupt.java
+     
+*********************************************************************************
+
+Interface Condition  from  java.util.concurrent.locks
+-----------------------------------------------------
+Just as Lock is a generalization for synchronization, the Lock framework includes 
+a generalization of wait and notify called Condition. A Lock object acts as a factory object 
+for condition variables bound to that lock, and unlike with the standard wait and notify methods, 
+there can be more than one condition variable associated with a given Lock.
+
+We can get condition object as ,
+Condition condition = lock.lock().newCondition() ;
+
+some important methods of this interface are given below ,
+
+1. void await()  throws InterruptedException
+    Causes the current thread to wait until it is signalled or interrupted. 
+    
+2. boolean await(long time, TimeUnit unit) throws InterruptedException
+    Causes the current thread to wait until it is signalled or interrupted, or 
+    the specified waiting time elapses. 
+    
+3. void signal() wakes up one waiting thread.
+
+4. void signalAll() wakes up all waiting threads.
+
+   If any threads are waiting on this condition then they are all woken up. 
+   Each thread must re-acquire the lock before it can return from await.  
+
+#### run following Demo  as an example of Conditions on locks.
+
+C:\Java_concurrency_workspace\JavaConcurrency\src\com\seed\concurrent\locks\simplelock\condition\TestLockCondition.java
+
+*********************************************************************************
+
+ReentrantReadWriteLock class  implements ReadWriteLock which has both type of lock read lock and write lock.
+
+ More than one thread can apply read lock simultaneously but write lock can be applied by 
+ only one thread at one time. 
+ As an example of this lock is the collection that is being accessed by more than one thread
+ may need to modify the collection frequently. 
+ So threads will need to apply locks on that collection object. 
+ ReadWriteLock has only two method readLock and writeLock. readLock() is used for reading 
+ and writeLock() is used for writing. ReentrantReadWriteLock has the following properties.
+
+ Features of ReentrantReadWriteLock  are ,
+ 
+1. ReentrantReadWriteLock has no preferences over the selection of readLock and writeLock.
+2. ReadLock cannot be acquired until all writeLock is released.
+3. It is possible to downgrade writeLock to readLock but vice-versa is not possible. 
+
+##### Run  following demo :
+
+C:\Java_concurrency_workspace\JavaConcurrency\src\com\seed\concurrent\locks\readwritelock\TestReadWriteLocks.java
+
+**********************************************************************************

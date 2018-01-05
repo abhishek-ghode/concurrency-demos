@@ -1,0 +1,30 @@
+Links:
+------
+
+http://www.ibm.com/developerworks/java/tutorials/j-concur/
+
+Notes:
+-------
+
+
+1. A thread pool can be described as a collection of runnables (work queue) and a connections of running threads. 
+These threads are constantly running and are checking the work query for new work. 
+If there is new work to be done they execute this Runnable. 
+The Thread class itself provides a method, e.g. execute(Runnable r) to add runnables to the work queue.
+
+2. If you submit a callable to an executor the framework returns a java.util.concurrent.Future. 
+This futures can be used to check the status of a callable and to retrieve the result from the callable.
+
+3. In all of the previous examples, there's a close connection between the task being done by a new thread, 
+as defined by its Runnable object, and the thread itself, as defined by a Thread object. 
+This works well for small applications, 
+but in large-scale applications, it makes sense to separate thread management 
+and creation from the rest of the application. 
+Objects that encapsulate these functions are known as executors.
+
+4. The java.util.concurrent package defines three executor interfaces:
+
+Executor, a simple interface that supports launching new tasks.
+ExecutorService, a subinterface of Executor, which adds features that help manage the lifecycle, 
+both of the individual tasks and of the executor itself.
+ScheduledExecutorService, a subinterface of ExecutorService, supports future and/or periodic execution of tasks. 

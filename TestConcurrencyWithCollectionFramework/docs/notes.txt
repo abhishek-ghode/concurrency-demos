@@ -1,0 +1,32 @@
+Useful Links:
+---------------
+
+1. http://www.ibm.com/developerworks/java/library/j-5things5/index.html
+2. Doug Lea's work and book Concurrent Programming in Java. Lea's book is considered the bible for multithreaded Java programming.
+Things to cover:
+3. http://www.developer.com/java/ent/article.php/3645111/Java-5s-BlockingQueue.htm
+-------------------
+
+1>	BlockingQueue
+2>	CopyOnWriteArrayList
+3>	ConcurrentMap
+4>	SynchronousQueues
+
+More on BlockingQueue:
+------------------------------
+
+Queues are common constructs in multithreaded applications. 
+Clients add requests to a queue. A server retrieves requests from the queue. 
+When no requests are available in the queue, the server waits for entries to be posted to it.
+
+
+The Queue class, also new to Java 5, is a new collection class that supports the classic concept of a FIFO (first-in, first out) data structure. 
+Other Java 5 queue implementations include support for removal based on priority, and a collection that acts like a stack.
+
+
+
+
+
+
+
+

@@ -1,0 +1,110 @@
+Java.util.concurrent Content Topics
+-----------------------------------
+
+
+
+
+
+List of Topics  which  will be covered is given below:
+
+
+1.) - Need for High level Concurrency Objects.
+-------------------------------------------------------------------------------------
+
+
+2.) - Following topics  from java.util.concurrent.locks package 
+      
+      - Lock  interface
+
+      - ReadWriteLock  interface
+
+      - ReentrantLock class
+
+      - ReentrantReadWriteLock  class
+
+      - Condition objects 
+        - use of await() , signal() , signalAll() etc.
+
+-------------------------------------------------------------------------------------
+
+
+3.) - Executor Framework of java.util.concurrent package.
+
+      -  Use of interfaces Executor  and ExecutorService and concept
+         of Thread pools and use of important methods of 
+         java.util.concurrent.Executors class.
+
+     
+
+      -  Threads returning values with Callables  and Futures
+         Future used to capture and get values asynchronously from submitted 
+         Callables.
+
+
+      -  ScheduledExecutorService Interface
+
+--------------------------------------------------------------------------------------
+
+4.) Synchronizers :
+---------------
+
+      - CountDownLatch class from java.util.Concurrent package
+
+      - CyclicBarrier  class from java.util.Concurrent package  (specific to java 1.5)
+
+      - java.util.concurrent.Phaser  class   - (Specific to Java 1.7)
+
+      - Exchanger
+
+      - java.util.concurrent.Semaphore  class
+
+---------------------------------------------------------------------------------------
+
+java.util.concurrent.atomic
+
+5.) - Atomic  variables from   java.util.concurrent.atomic  package  and  
+      classes from that package given  below .  (based on java 1.7)
+      
+       
+       *  AtomicBoolean
+       *  AtomicInteger
+       *  AtomicIntegerArray
+       *  AtomicIntegerFieldUpdater
+       *  AtomicLong
+       *  AtomicLongArray
+       *  AtomicLongFieldUpdater
+       *  AtomicMarkableReference
+       *  AtomicReference
+       *  AtomicReferenceArray
+       *  AtomicReferenceFieldUpdater
+       *  AtomicStampedReference
+
+----------------------------------------------------------------------------------------
+
+6.) - Concurrent Random Numbers : Use of  ThreadLocalRandom  class from 
+       java.util.concurrent  package
+
+----------------------------------------------------------------------------------------
+
+7.) - Fork/Join from Java 1.7
+
+----------------------------------------------------------------------------------------
+
+To be covered
+
+      - Concurrent  Collections and their advantage to avoid Memory Consistency Errors
+
+
+      - BlockingQueue 
+
+
+      - ConcurrentMap interface and its  implementation ConcurrentHashMap class
+
+
+      - ConcurrentNavigableMap interface and  its implementation ConcurrentSkipListMap
+
+
+      - ConcurrentLinkedDeque class  - (Specific to Java 1.7)
+
+
+      - TransferQueue interface  implemented  by LinkedTransferQueue class.- (Specific to Java 1.7)
